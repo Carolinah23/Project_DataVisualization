@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Carolina H </title>
+    <title>Carolina Hurtado-Pulido</title>
 </head>
 
 <body>
-    <script src="https://d3js.org/d3.v4.js"></script> 
-    <script src='geotiff.min.js'></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 
     <!--Styles for text along the document-->
     <style> 
@@ -28,7 +27,22 @@
             <rect x="50" y="50" width="500" height="500" style="fill:white; stroke:black; stroke-width:1px"/>
         </svg>
         <div></div>
+        <script src="https://cdn.jsdelivr.net/npm/geotiff"></script>
         <script>
+        console.log(GeoTIFF);
+        // Note: GeoTIFF.Pool will not work
+        </script>
+        <script>
+            
+            console.log("Hello")
+            const { fromUrl, fromUrls, fromArrayBuffer, fromBlob} = GeoTIFF;
+            console.log("from Url", fromBlob);
+
+            const Image1=GeoTIFF.fromBlob("/Images/Merge_GroundICP_raw.tif")
+
+            //const differencesFile=await GeoTIFF.fromFile("/Images/Merge_GroundICP_raw.tif")
+            //const differencesImage=await differencesFile.getImage();
+            //sconst differencesBox=differencesImage.getBoundingBox();
 
         </script>
     </div>
