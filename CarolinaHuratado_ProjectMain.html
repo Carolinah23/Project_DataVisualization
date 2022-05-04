@@ -49,20 +49,39 @@
                 .attr("height", imageSource.height)
                 .append("g");
         }
-        console.log(imageSource.onload);
+        pixelate(worstImage, 10);
 
-        //FUNCTION TO READ AND PLOT WORST IMAGE
+        //FUNCTION TO create array of objects (big ugly pixels)
         function pixelate (image, sizeSquare){
             const x_lenght=image.width/sizeSquare;
             const y_length=image.height/sizeSquare;
 
-            let data=[];
+            let data=[]; //Array to save color channel values. The array is flat, that is the reason why it jumps every 4
 
             for(x=0; x<x_lenght; x++){
                 for (y=0; y<y_length; y++){
-                    const rgba=container.getImageData(x*sizeSquare, y*sizeSquare, sizeSquare, sizeSquare)
+                    const rgba=container.getImageData(x*sizeSquare, y*sizeSquare, sizeSquare, sizeSquare).data;
+                    const len=rgba.length; //Number of "new" pixels
+                    const num=len/4;
+
+                    let r=0;
+                    let g=0;
+                    let b=0;
+
+                    for (i=0; i<len; i+=4){
+                        r+=rgba[i]
+                        g+=rgba[i+1]
+                        b+=rgba[i+2]
+                    }
+
+                    data.push({
+                        x:x*sizeSquare,
+                        y:y*sizeSquare,
+                        rgb:"rgb("+[Math.round(r/num), Math.round(g/num),Math.round(b/num)].join(",")+")"
+                    })
                 }
             }
+            //drawSvg(data, size);
         }
 
 
