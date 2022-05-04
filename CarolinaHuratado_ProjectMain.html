@@ -19,33 +19,54 @@
         <p><b>Justification:</b> Hello! I like to plot my data.</p>
         <p><b>Intructions:</b> Here we have the instructions</p>
     </div>
+
     <div>
-        <svg id="LiDAR" width="600" height="600">
-            <rect x="50" y="50" width="500" height="500" style="fill:white; stroke:black; stroke-width:1px"/>
-        </svg>
-        <svg id="SAR" width="600" height="600">
-            <rect x="50" y="50" width="500" height="500" style="fill:white; stroke:black; stroke-width:1px"/>
-        </svg>
-        <div></div>
-        <script src="https://cdn.jsdelivr.net/npm/geotiff"></script>
-        <script>
-        console.log(GeoTIFF);
-        // Note: GeoTIFF.Pool will not work
-        </script>
-        <script>
-            
-            console.log("Hello")
-            const { fromUrl, fromUrls, fromArrayBuffer, fromBlob} = GeoTIFF;
-            console.log("from Url", fromBlob);
-
-            const Image1=GeoTIFF.fromBlob("/Images/Merge_GroundICP_raw.tif")
-
-            //const differencesFile=await GeoTIFF.fromFile("/Images/Merge_GroundICP_raw.tif")
-            //const differencesImage=await differencesFile.getImage();
-            //sconst differencesBox=differencesImage.getBoundingBox();
-
-        </script>
+        <image style="display: none;" id="diff" src="/Images/Diff.jpg" width="600" height="600"/>
     </div>
+
+    <canvas id="fig1" x="50" y="50" width="600" height="600"></canvas>
+    <canvas id="fig2" x="50" y="50" width="600" height="600"></canvas>
+
+    <div id="display1"></div>
+
+    <script>
+        //LOAD HANDLER
+        const canvas1=document.querySelector("#fig1");
+        const container=canvas1.getContext("2d");
+        const imageSource=document.getElementById("diff");
+        const worstImage=new Image()
+
+        let svg
+
+        worstImage.src=imageSource.src
+
+        //Draw image on the canvas and fill svg
+        worstImage.onload=function CanvasRenderer(){
+            container.drawImage(worstImage,0,0);
+            svg=d3.select("#display1")
+                .append("svg")
+                .attr("width", imageSource.width)
+                .attr("height", imageSource.height)
+                .append("g");
+        }
+        console.log(imageSource.onload);
+
+        //FUNCTION TO READ AND PLOT WORST IMAGE
+        function pixelate (image, sizeSquare){
+            const x_lenght=image.width/sizeSquare;
+            const y_length=image.height/sizeSquare;
+
+            let data=[];
+
+            for(x=0; x<x_lenght; x++){
+                for (y=0; y<y_length; y++){
+                    const rgba=container.getImageData(x*sizeSquare, y*sizeSquare, sizeSquare, sizeSquare)
+                }
+            }
+        }
+
+
+    </script>
 
 </body>
 
