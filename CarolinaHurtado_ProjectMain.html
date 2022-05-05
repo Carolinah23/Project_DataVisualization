@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Carolina Hurtado-Pulido</title>
+</head>
+
+<body>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!--Styles for text along the document-->
+    <style> 
+        h1 {text-align: center;}
+        canvas {border: 3px solid #444444;
+                margin: 40px;}
+    </style>
+    <h1>Compare Raster Values Interactively</h1>
+    <div>
+        <h2>Carolina Hurtado-Pulido</h2>
+        <h3>Final project - Spring/2022 (May/8/2022)</h3>
+        <p><b>Justification:</b> Hello! I like to plot my data.</p>
+        <p><b>Intructions:</b> Here we have the instructions</p>
+    </div>
+
+    <div id="container" style= "text-align:center;">
+        <image style="display: none;" id="diff" src="/Images/Captura.JPG"/>
+        <image style="display: none;" id="dem" src="/Images/terk.jpg"/>
+        <canvas id="canvas_first" width="600" height="600" ></canvas>
+        <canvas id="canvas_second" width="600" height="600"></canvas>
+    </div>
+
+    <script>
+        //Function to load on the canvas the images- https://www.w3schools.com/tags/canvas_drawimage.asp
+        window.onload=function(){
+            var canvas1=document.getElementById("canvas_first");
+            var canvas2=document.getElementById("canvas_second");
+            var context1=canvas1.getContext("2d");
+            var context2=canvas2.getContext("2d");
+            var fig_diff=document.getElementById("diff");
+            var fig_dem=document.getElementById("dem");
+            context1.drawImage(fig_diff, 0,0);
+            context2.drawImage(fig_dem, 0,0);
+            canvas1.addEventListener("click", function(event){
+                var eventCoordinates=MouseEventLocation(this,event);
+                var coord="x="+eventCoordinates.x+" y="+ eventCoordinates.y;
+                var pixelData=context1.getImageData(eventCoordinates.x, eventCoordinates.y, 1,1).data;
+                //No data values
+                if ((pixelData[0]==0)&&(pixelData[1]==0)&&(pixelData[2]==0)&&(pixelData[3]==0)){
+                        coord+="Nan"
+                }
+                })
+        }
+        /////////////////////////////////////////
+        //Retrieve location of the mouse event//
+        ///////////////////////////////////////
+
+        //Function to return of an object (canvas) in the document
+        function CanvasPosition(obj){
+            var horizontal=0
+            var vertical=0
+            if(obj.offsetParent){
+                do{
+                    horizontal+=obj.offsetParent;
+                    vertical+=obj.offsetParent;
+                }while (obj=obj.offsetParent);
+                return {x:horizontal, y:vertical};
+            }
+            return undefined;
+        }
+
+        //Function to locate mouse event on canvas
+        function MouseEventLocation(object, event){
+            var position=CanvasPosition(object);
+            return{
+                x:(event.pageX-position.x), y:(event.pageY-position.y)
+            };
+        }
+
+
+        //Use RGBA data of the pixel
+
+        //https://ourcodeworld.com/articles/read/185/how-to-get-the-pixel-color-from-a-canvas-on-click-or-mouse-event-with-javascript
+        //https://www.freecodecamp.org/news/d3-and-canvas-in-3-steps-8505c8b27444/
+
+    </script>
+
+</body>
+</html>
