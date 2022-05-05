@@ -6,17 +6,25 @@
 <img style="display: none;" id="scream" width="100" height="277" src="/Images/Captura.JPG" alt="The Scream">
 
 <p>Canvas:</p>
-<canvas id="myCanvas" width="580" height="350" style="border:1px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.
-</canvas>
+<canvas width="500" height="300" id="canvas">Sorry, no canvas available</canvas>
+<input type="text" id="title" placeholder="Your Title" />
+</br>
 
 <script>
-window.onload = function() {
-  var c = document.getElementById("myCanvas");
-  var ctx = c.getContext("2d");
-  var img = document.getElementById("scream");
-  ctx.drawImage(img, 10, 10);
-}
+  var canvas = document.getElementById('canvas'),
+  ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0e70d1'; //canvas
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('title').addEventListener('keyup', function() {
+    var stringTitle = document.getElementById('title').value;
+    console.log(stringTitle);
+    ctx.fillStyle = '#b45f06'; //canvas
+    ctx.fillRect(10, 100, 200, 200);
+    ctx.fillStyle = '#ffffff'; //text
+    ctx.font = '60px sans-serif';
+    ctx.fillText(stringTitle, 15, canvas.height / 2 + 35);
+    });
+
 </script>
 
 </body>
