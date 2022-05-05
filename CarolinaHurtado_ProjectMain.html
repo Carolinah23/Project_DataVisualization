@@ -34,19 +34,36 @@
         window.onload=function(){
             var canvas1=document.getElementById("canvas_first");
             var canvas2=document.getElementById("canvas_second");
+
             var context1=canvas1.getContext("2d");
             var context2=canvas2.getContext("2d");
+
             var fig_diff=document.getElementById("diff");
             var fig_dem=document.getElementById("dem");
+
             context1.drawImage(fig_diff, 0,0);
             context2.drawImage(fig_dem, 0,0);
+
+            context1.font=context2.font="25px Comic Sans MS";
+
             canvas1.addEventListener("click", function(event){
                 var eventCoordinates=MouseEventLocation(this,event);
                 var coord="x="+eventCoordinates.x+" y="+ eventCoordinates.y;
                 var pixelData=context1.getImageData(eventCoordinates.x, eventCoordinates.y, 1,1).data;
                 //No data values
                 if ((pixelData[0]==0)&&(pixelData[1]==0)&&(pixelData[2]==0)&&(pixelData[3]==0)){
-                        coord+="Nan"
+                    context1.fillStyle = "#ffffff";
+                    context1.fillRect(0, 550, 600, 50);
+                    context1.fillStyle = "#000000";
+                    context1.fillText("NaN value",10,580);
+                    console.log("NaN value");
+                }
+                else{
+                    context1.fillStyle = "#ffffff";
+                    context1.fillRect(0, 550, 600, 50);
+                    context1.fillStyle = "#000000";
+                    context1.fillText("R:"+pixelData[0]+" G:"+pixelData[1]+" B:"+pixelData[2],10,580);
+                    console.log("R:"+pixelData[0]+" G:"+pixelData[1]+" B:"+pixelData[2]);
                 }
                 })
         }
@@ -60,8 +77,8 @@
             var vertical=0
             if(obj.offsetParent){
                 do{
-                    horizontal+=obj.offsetParent;
-                    vertical+=obj.offsetParent;
+                    horizontal+=obj.offsetLeft;
+                    vertical+=obj.offsetTop;
                 }while (obj=obj.offsetParent);
                 return {x:horizontal, y:vertical};
             }
@@ -83,6 +100,7 @@
         //https://www.freecodecamp.org/news/d3-and-canvas-in-3-steps-8505c8b27444/
 
     </script>
+
 
 </body>
 </html>
