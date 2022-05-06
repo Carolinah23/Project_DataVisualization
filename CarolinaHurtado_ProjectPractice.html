@@ -17,7 +17,7 @@
         <canvas id="GFG" width="250" height="250" style="border:1px solid black;"></canvas>
   
         <script>
-          
+          Min_ColorDistance_left(255,235,244);
           /* Retrieve canvas with id GFG, and store it in a */
           var a = document.getElementById("GFG");
   
@@ -53,6 +53,7 @@
             //console.log("up y:",coord_end.y)
           })
 
+          
           //Function that decides if a pixel is in a brush region 
           function drawRectangle(canvasContext, x, y, rect_width, rect_height){
             canvasContext.beginPath();
@@ -101,7 +102,35 @@
             console.log("std:",Std)
           }
             
-        //Function to return of an object (canvas) in the document
+        //Function to find the closest color using the classes from QGIS - image left
+        function Min_ColorDistance_left(R,G,B){
+          var df=[178, 24, 44, 236, 132, 95, 250, 202, 178, 255, 242, 174, 235, 244, 213, 179, 212, 231, 89, 156, 200,33, 102, 172];
+          var distances=[];
+          for(i=0; i<df.length;i+=3){
+            distances.push(Math.sqrt(((R-df[i])*(R-df[i]))+((G-df[i+1])*(G-df[i+1]))+((B-df[i+2])*(B-df[i+2]))));
+          }
+          //console.log(distances)
+          var closest_distance=Math.min(...distances);
+          var closest_index=distances.indexOf(closest_distance);
+          //console.log(closest_distance);
+          //console.log(closest_index);
+
+        }
+
+        //Function to classify pyxel on change ranges
+        function ClassificationLeft(index_min_left){
+          if (index_min_left==0){}
+          else if (index_min_left==1){}
+          else if (index_min_left==2){}
+          else if (index_min_left==3){}
+          else if (index_min_left==4){}
+          else if (index_min_left==5){}
+          else if (index_min_left==6){}
+          else if (index_min_left==7){}
+          else {//Nan
+          }
+        }
+          //Function to return of an object (canvas) in the document
         function CanvasPosition(obj){
             var horizontal=0
             var vertical=0
