@@ -24,8 +24,8 @@
     </div>
 
     <div id="container" style= "text-align:center;">
-        <image style="display: none;" id="diff" src="/Images/Captura.JPG"/>
-        <image style="display: none;" id="dem" src="/Images/terk.jpg"/>
+        <image style="display: none;" id="diff" src="/Images/Diff.jpg"/>
+        <image style="display: none;" id="dem" src="/Images/DEM.jpg"/>
         <canvas id="canvas_first" width="600" height="600" ></canvas>
         <canvas id="canvas_second" width="600" height="600"></canvas>
     </div>
@@ -47,13 +47,13 @@
 
             context1.font=context2.font="25px Arial";
 
-            var isRegion=false;
+
             //Event for one pixel
-            canvas1.addEventListener("click", function(event){
+            canvas1.addEventListener("dblclick", function(event){
                 var eventCoordinates=MouseEventLocation(this,event);
                 var pixelData=context1.getImageData(eventCoordinates.x, eventCoordinates.y, 1,1).data;
                 //No data values
-                if ((pixelData[0]==0)&&(pixelData[1]==0)&&(pixelData[2]==0)&&(pixelData[3]==0)){
+                if ((pixelData[0]==255)&&(pixelData[1]==255)&&(pixelData[2]==255)&&(pixelData[3]==255)){
                     context1.fillStyle = "#ffffff";
                     context1.fillRect(0, 550, 600, 50);
                     context1.fillStyle = "#000000";
@@ -143,7 +143,7 @@
               sum_Differences+=(array[i]-Mean);
             }
             var Std=sum_Differences/array.length;
-            return [Mean, Std];
+            return [Mean.toFixed(3), Std.toFixed(5)];
         }
 
 
