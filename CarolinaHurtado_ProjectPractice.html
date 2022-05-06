@@ -41,9 +41,13 @@
             //console.log("down y:",coord_start.y)
           })
           a.addEventListener("mouseup", function(event){
+            var RGB=[];
             coord_end=MouseEventLocation(this, event);
             drawRectangle(gfg, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
-            findPixels(gfg, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
+            RGB=findPixels(gfg, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
+            stats(RGB[0]);
+            stats(RGB[1]);
+            stats(RGB[2]);
             isRegion=false;
             //console.log("up x:",coord_end.x)
             //console.log("up y:",coord_end.y)
@@ -77,27 +81,24 @@
             //console.log(Red);
             //console.log(Green);
             //console.log(Blue);
-            return Red, Green, Blue
+            //console.log([Red, Green, Blue]);
+            return [Red, Green, Blue];
             }
           //Function to calculate mean and standard deviation from pixels
-          function stats(r_array, g_array, b_array){
-            var sumRed=0;
-            var sumGreen=0;
-            var sumBlue=0;
-            for (i=0; i<r_array.length;i++){
-              sumRed+=r_array[i];
-              sumGreen+=g_array[i];
-              sumBlue+=b_array[i];
-            }
+          function stats(array){
+            var sum=0;
+            var sum_Differences=0;
+            for (i=0; i<array.length;i++){
+              sum+=array[i];}
             //Means
-            var RedMean=sumRed/r_array.length;
-            var GreenMean=sumGreen/g_array.length;
-            var BlueMean=Blue/b_array.length;
+            var Mean=sum/array.length;
             //std
-            for(i=0; i<r_array.length;i++){
-              sumRed_mean+=(r_array[i]-RedMean);
+            for(i=0; i<array.length;i++){
+              sum_Differences+=(array[i]-Mean);
             }
-            var RedStd=sumRed_mean/r_array.length;
+            var Std=sum_Differences/array.length;
+            console.log("Mean:",Mean)
+            console.log("std:",Std)
           }
             
         //Function to return of an object (canvas) in the document
