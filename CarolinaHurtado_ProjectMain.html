@@ -63,8 +63,7 @@
                     context1.fillStyle = "#ffffff";
                     context1.fillRect(0, 550, 600, 50);
                     context1.fillStyle = "#000000";
-                    context1.fillText("R:"+pixelData[0]+" G:"+pixelData[1]+" B:"+pixelData[2],10,580);
-                    console.log("R:"+pixelData[0]+" G:"+pixelData[1]+" B:"+pixelData[2]);
+                    ClassificationLeft(context1, Min_ColorDistance_left(pixelData[0],pixelData[1],pixelData[2]));
                 }
                 })
             //Events for region of pixels
@@ -74,17 +73,67 @@
                 context1.fillRect(0, 550, 600, 50);
             })
             canvas1.addEventListener("mouseup", function(event){
-                var RGB=[];
+                var RGB_left=[];
+                var RGB_right=[];
                 coord_end=MouseEventLocation(this, event);
-                drawRectangle(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
-                RGB=findPixels(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
-                Red_Stats=stats(RGB[0]);
-                Green_Stats=stats(RGB[1]);
-                Blue_Stats=stats(RGB[2]);
-                console.log(Red_Stats);
+                drawRectangle(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y));
+                drawRectangle(context2, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
+                RGB_left=findPixels(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y));
+                Red_Stats_left=stats(RGB_left[0]);
+                Green_Stats_left=stats(RGB_left[1]);
+                Blue_Stats_left=stats(RGB_left[2]);
                 context1.fillStyle = "#000000";
-                context1.fillText("Mean Red:"+Red_Stats[0]+" Std Red:"+Red_Stats[1],10,580);
+                Mean_ClassificationLeft(context1, Min_ColorDistance_left(Red_Stats_left[0],Green_Stats_left[0],Blue_Stats_left[0]));
+                //context1.fillText("Mean Red:"+Red_Stats[0]+" Std Red:"+Red_Stats[1],10,580);
             })
+                //Event for one pixel
+            canvas2.addEventListener("dblclick", function(event){
+                var eventCoordinates=MouseEventLocation(this,event);
+                var pixelData=context1.getImageData(eventCoordinates.x, eventCoordinates.y, 1,1).data;
+                //No data values
+                if ((pixelData[0]==255)&&(pixelData[1]==255)&&(pixelData[2]==255)&&(pixelData[3]==255)){
+                    context2.fillStyle = "#ffffff";
+                    context2.fillRect(0, 550, 600, 50);
+                    context2.fillStyle = "#000000";
+                    context2.fillText("NaN value",10,580);
+                    console.log("NaN value");
+                }
+                else{
+                    context2.fillStyle = "#ffffff";
+                    context2.fillRect(0, 550, 600, 50);
+                    context2.fillStyle = "#000000";
+                    ClassificationRight(context2, Min_ColorDistance_left(pixelData[0],pixelData[1],pixelData[2]));
+                }
+                })
+            //Events for region of pixels
+            canvas2.addEventListener("mousedown", function(event){
+                coord_start=MouseEventLocation(this, event);
+                context2.fillStyle = "#ffffff";
+                context1.fillStyle = "#ffffff";
+                context2.fillRect(0, 550, 600, 50);
+                context1.fillRect(0, 550, 600, 50);
+            })
+            canvas2.addEventListener("mouseup", function(event){
+                var RGB_right=[];
+                var RGB_left=[];
+                coord_end=MouseEventLocation(this, event);
+                drawRectangle(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y));
+                drawRectangle(context2, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
+                RGB_right=findPixels(context2, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y));
+                RGB_left=findPixels(context1, coord_start.x, coord_start.y, (coord_end.x-coord_start.x), (coord_end.y-coord_start.y))
+                Red_Stats_right=stats(RGB_right[0]);
+                Green_Stats_right=stats(RGB_right[1]);
+                Blue_Stats_right=stats(RGB_right[2]);
+                Red_Stats_left=stats(RGB_left[0]);
+                Green_Stats_left=stats(RGB_left[1]);
+                Blue_Stats_left=stats(RGB_left[2]);
+                context2.fillStyle = "#000000";
+                context1.fillStyle = "#000000";
+                Mean_ClassificationRight(context2, Min_ColorDistance_right(Red_Stats_right[0],Green_Stats_right[0],Blue_Stats_right[0]));
+                Mean_ClassificationLeft(context1, Min_ColorDistance_left(Red_Stats_left[0],Green_Stats_left[0],Blue_Stats_left[0]));
+                //context1.fillText("Mean Red:"+Red_Stats[0]+" Std Red:"+Red_Stats[1],10,580);
+            })
+        
         }
 
         //Function to return of an object (canvas) in the document
@@ -100,7 +149,6 @@
             }
             return undefined;
         }
-
         //Function to locate mouse event on canvas
         function MouseEventLocation(object, event){
             var position=CanvasPosition(object);
@@ -129,7 +177,7 @@
             }
             return [Red, Green, Blue];
             }
-          //Function to calculate mean and standard deviation from pixels
+        //Function to calculate mean and standard deviation from region
         function stats(array){
             var sum=0;
             var sum_Differences=0;
@@ -144,10 +192,76 @@
             var Std=sum_Differences/array.length;
             return [Mean.toFixed(3), Std.toFixed(5)];
         }
+        //Function to find the closest color using the classes from QGIS - image left
+        function Min_ColorDistance_left(R,G,B){
+          var df=[178, 24, 44, 236, 132, 95, 250, 202, 178, 255, 242, 174, 235, 244, 213, 179, 212, 231, 89, 156, 200,33, 102, 172];
+          var distances=[];
+          for(i=0; i<df.length;i+=3){
+            distances.push(Math.sqrt(((R-df[i])*(R-df[i]))+((G-df[i+1])*(G-df[i+1]))+((B-df[i+2])*(B-df[i+2]))));
+          }
+          var closest_distance=Math.min(...distances);
+          var closest_index=distances.indexOf(closest_distance);
+          return closest_index;
 
+        }
+        //Function to classify pixel on change ranges
+        function ClassificationLeft(ctx, index_min_left){
+          if (index_min_left==0){ctx.fillText("Subsidence between -1 to -0.75 m",10,580);}
+          else if (index_min_left==1){ctx.fillText("Subsidence between -0.75 to -0.5 m",10,580);}
+          else if (index_min_left==2){ctx.fillText("Subsidence between -0.5 to -0.25 m",10,580);}
+          else if (index_min_left==3){ctx.fillText("Subsidence between -0.25 to 0 m",10,580);}
+          else if (index_min_left==4){ctx.fillText("Uplifting between 0 to 0.25 m",10,580);}
+          else if (index_min_left==5){ctx.fillText("Uplifting between 0.25 to 0.5 m",10,580);}
+          else if (index_min_left==6){ctx.fillText("Uplifting between 0.5 to 0.75 m",10,580);}
+          else if (index_min_left==7){ctx.fillText("Uplifting between 0.75 to 1 m",10,580);}
+        }
+        //Function to classify region on change ranges
+        function Mean_ClassificationLeft(ctx, index_min_left){
+          if (index_min_left==0){ctx.fillText("Mean between -1 to -0.75 m",10,580);}
+          else if (index_min_left==1){ctx.fillText("Mean between -0.75 to -0.5 m",10,580);}
+          else if (index_min_left==2){ctx.fillText("Mean between -0.5 to -0.25 m",10,580);}
+          else if (index_min_left==3){ctx.fillText("Mean between -0.25 to 0 m",10,580);}
+          else if (index_min_left==4){ctx.fillText("Mean between 0 to 0.25 m",10,580);}
+          else if (index_min_left==5){ctx.fillText("Mean between 0.25 to 0.5 m",10,580);}
+          else if (index_min_left==6){ctx.fillText("Mean between 0.5 to 0.75 m",10,580);}
+          else if (index_min_left==7){ctx.fillText("Mean between 0.75 to 1 m",10,580);}
+        }
         
-
-
+        //Function to find the closest color using the classes from QGIS - image left
+        function Min_ColorDistance_right(R,G,B){
+          var df=[1, 102, 94, 60, 154, 146, 136, 203, 196, 220, 234, 236, 246, 237, 213, 232, 206, 148, 199, 157, 80, 140, 81, 10];
+          var distances=[];
+          for(i=0; i<df.length;i+=3){
+            distances.push(Math.sqrt(((R-df[i])*(R-df[i]))+((G-df[i+1])*(G-df[i+1]))+((B-df[i+2])*(B-df[i+2]))));
+          }
+          var closest_distance=Math.min(...distances);
+          var closest_index=distances.indexOf(closest_distance);
+          return closest_index;
+        }
+        //Function to classify pixel on elevations
+        function ClassificationRight(ctx, index_min_left){
+          if (index_min_left==0){ctx.fillText("Elevation between -4 to 0 m",10,580);}
+          else if (index_min_left==1){ctx.fillText("Elevation between 0 to 4 m",10,580);}
+          else if (index_min_left==2){ctx.fillText("Elevation between 4 to 8 m",10,580);}
+          else if (index_min_left==3){ctx.fillText("Elevation between 8 to 12 m",10,580);}
+          else if (index_min_left==4){ctx.fillText("Elevation between 12 to 16 m",10,580);}
+          else if (index_min_left==5){ctx.fillText("Elevation between 16 to 20 m",10,580);}
+          else if (index_min_left==6){ctx.fillText("Elevation between 20 to 24 m",10,580);}
+          else if (index_min_left==7){ctx.fillText("Elevation between 24 to 29 m",10,580);}
+        }
+        //Function to classify region on change ranges
+        function Mean_ClassificationRight(ctx, index_min_left){
+          if (index_min_left==0){ctx.fillText("Mean between -4 to 0 m",10,580);}
+          else if (index_min_left==1){ctx.fillText("Mean between 0 to 4 m",10,580);}
+          else if (index_min_left==2){ctx.fillText("Mean between 4 to 8 m",10,580);}
+          else if (index_min_left==3){ctx.fillText("Mean between 8 to 12 m",10,580);}
+          else if (index_min_left==4){ctx.fillText("Mean between 12 to 16 m",10,580);}
+          else if (index_min_left==5){ctx.fillText("Mean between 16 to 20 m",10,580);}
+          else if (index_min_left==6){ctx.fillText("Mean between 20 to 24 m",10,580);}
+          else if (index_min_left==7){ctx.fillText("Mean between 24 to 29 m",10,580);}
+        }
+        
+        
         //https://www.w3schools.com/tags/canvas_drawimage.asp
         //https://ourcodeworld.com/articles/read/185/how-to-get-the-pixel-color-from-a-canvas-on-click-or-mouse-event-with-javascript
         //https://www.geeksforgeeks.org/how-to-get-pixel-from-html-canvas/
