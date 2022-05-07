@@ -12,7 +12,7 @@
     <center>
         <h1 style="color:green;">GeeksfoGeeks</h1>
           
-        <h3>Getting pixel information from html canvas</h3>
+        <h3>Getting pixel information from html CANVAS</h3>
   
         <canvas id="GFG" width="250" height="250" style="border:1px solid black;"></canvas>
   
@@ -33,6 +33,24 @@
           gfg.fillRect(10, 20, 180, 180);
 
           var isRegion=false;
+
+          a.addEventListener("dblclick", function(event){
+            var eventCoordinates=MouseEventLocation(this,event);
+            var pixelData=gfg.getImageData(eventCoordinates.x, eventCoordinates.y, 1,1).data;
+            //No data values
+            if ((pixelData[0]==255)&&(pixelData[1]==255)&&(pixelData[2]==255)&&(pixelData[3]==255)){
+              gfg.fillStyle = "#ffffff";
+              gfg.fillRect(0, 200, 250, 50);
+              gfg.fillStyle = "#000000";
+              gfg.fillText("NaN value",10,230);
+            }
+            else{
+              gfg.fillStyle = "#ffffff";
+              gfg.fillRect(0, 200, 250, 50);
+              gfg.fillStyle = "#000000";
+              ClassificationLeft(Min_ColorDistance_left(pixelData[0],pixelData[1],pixelData[2]));
+            }
+            })
 
           a.addEventListener("mousedown", function(event){
             coord_start=MouseEventLocation(this, event);
@@ -114,21 +132,20 @@
           var closest_index=distances.indexOf(closest_distance);
           //console.log(closest_distance);
           //console.log(closest_index);
+          return closest_index;
 
         }
 
-        //Function to classify pyxel on change ranges
+        //Function to classify pixel on change ranges
         function ClassificationLeft(index_min_left){
-          if (index_min_left==0){}
-          else if (index_min_left==1){}
-          else if (index_min_left==2){}
-          else if (index_min_left==3){}
-          else if (index_min_left==4){}
-          else if (index_min_left==5){}
-          else if (index_min_left==6){}
-          else if (index_min_left==7){}
-          else {//Nan
-          }
+          if (index_min_left==0){gfg.fillText("Subsidence between -1 to -0.75 m",10,230);}
+          else if (index_min_left==1){gfg.fillText("Subsidence between -0.75 to -0.5 m",10,230);}
+          else if (index_min_left==2){gfg.fillText("Subsidence between -0.5 to -0.25 m",10,230);}
+          else if (index_min_left==3){gfg.fillText("Subsidence between -0.25 to 0 m",10,230);}
+          else if (index_min_left==4){gfg.fillText("Uplifting between 0 to 0.25 m",10,230);}
+          else if (index_min_left==5){gfg.fillText("Uplifting between 0.25 to 0.5 m",10,230);}
+          else if (index_min_left==6){gfg.fillText("Uplifting between 0.5 to 0.75 m",10,230);}
+          else if (index_min_left==7){gfg.fillText("Uplifting between 0.75 to 1 m",10,230);}
         }
           //Function to return of an object (canvas) in the document
         function CanvasPosition(obj){
