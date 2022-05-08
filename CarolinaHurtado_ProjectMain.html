@@ -339,7 +339,7 @@
     Then, I stored the reference RGB values in two different arrays, one for each window.  I used 
     these references to know the variation in the pixels. Then, to find the correct range per pixel, 
     I took the RGB values of the selected pixel and compared them with each of the reference ranges 
-    using the euclidean distance. The closest range defined the range to which the pixel belongs. 
+    using the euclidean distance in the RGB space. The closest range defined the range to which the pixel belongs. 
     To find the dominant value in a region, I calculated the mean RGB values, then I used those means 
     to find the range in which it should belong as I explained before for one pixel. This metric shows 
     the dominant pixels in the region.</p>
